@@ -1,0 +1,26 @@
+    .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    }
+    /* ========================
+        LOGO SCROLL
+    ========================= */
+    @keyframes scroll {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+    }
+
+    .logo-track {
+    width: max-content;
+    animation: scroll 30s linear infinite;
+    }
+    .logo-track:hover {
+    animation-play-state: paused;
+    }

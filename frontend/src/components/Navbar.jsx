@@ -1,98 +1,132 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Img } from "react-image";
 import iconilena from "../assets/img/logoilenainterior.png";
-import Tombol from "../components/Tombol";
-import { FaSearch } from "react-icons/fa";
+import Tombol from "./Tombol";
+import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import {
+  MdOutlineContactSupport,
+  MdOutlineMail,
+  MdOutlinePhone,
+} from "react-icons/md";
 
 const Navbar = () => {
-    const [open, setOpen] = useState(false);
-    const [cari, setCari] = useState("");
-    const [pathname, setPathname] = useState(window.location.pathname);
+  const { pathname } = useLocation();
+  const [showSearch, setShowSearch] = useState(false);
+  const [cari, setCari] = useState("");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-    useEffect(() => {
-        if (cari) {
-            setOpen(true);
-        } else {
-            setOpen(false);
-        }
-    }, [cari]);
+  useEffect(() => {
+    setShowSearch(!!cari);
+  }, [cari]);
 
-    return (
-        <nav className="w-full">
-            <div className="container mx-auto flex justify-between items-center punya-mobile">
-                <div className="logo">
-                    <Link to="/" style={{ corsor: "pointer" }}>
-                        <Img
-                            src={iconilena}
-                            alt="Logo"
-                            width={150}
-                            height={200}
-                        />
-                    </Link>
-                </div>
-                <div className="flex justify-between items-center gap-4">
-                    <ul className="flex">
-                        <li>
-                            <Link
-                                to="/"
-                                onClick={() => setPathname("/")}
-                                className={pathname === "/" ? "active" : ""}
-                            >
-                                Home
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/project"
-                                onClick={() => setPathname("/project")}
-                                className={
-                                    pathname === "/project" ? "active" : ""
-                                }
-                            >
-                                Project
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/about"
-                                onClick={() => setPathname("/about")}
-                                className={
-                                    pathname === "/about" ? "active" : ""
-                                }
-                            >
-                                About Us
-                            </Link>
-                        </li>
-                    </ul>
-                    <div
-                        style={{ backgroundColor: "whiteSmoke" }}
-                        className={`bg-opacity-50 rounded-full search ${
-                            open ? "show" : cari ? "show" : ""
-                        }`}
+  return (
+    <>
+      <nav className="navbar">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          {/* Logo */}
+          <Link to="/" className="logo">
+            <Img src={iconilena} alt="Logo" width={140} height={40} />
+          </Link>
+
+          {/* Toggle (mobile) */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="text-white text-xl"
+            >
+              {mobileOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          </div>
+
+          {/* Desktop nav */}
+          <ul className="nav-links hidden md:flex items-center gap-6">
+            {[
+              { to: "/", label: "Home" },
+              { to: "/about", label: "About Us" },
+            ].map(({ to, label }) => (
+              <li key={to}>
+                <Link
+                  to={to}
+                  className={`nav-link ${
+                    pathname === to ? "active" : ""
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Search desktop */}
+          <div className={`search-container hidden md:flex ${showSearch ? "show" : ""}`}>
+            <input
+              type="text"
+              placeholder="Search"
+              className="search-input"
+              value={cari}
+              onChange={(e) => setCari(e.target.value)}
+            />
+            <Tombol
+              onClick={() => setShowSearch(!showSearch)}
+              icon={<FaSearch />}
+              text=""
+              className="bg-transparent"
+            />
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+            <div className="mobile-menu md:hidden">
+                <nav className="flex flex-col gap-4">
+                    <Link
+                    to="/"
+                    onClick={() => setMobileOpen(false)}
+                    className={`mobile-link ${pathname === "/" ? "active" : ""}`}
                     >
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            className="bg-transparent py-2 outline-none"
-                            value={cari}
-                            onChange={(e) => {
-                                setCari(e.target.value);
-                            }}
-                        />
-                        <Tombol
-                            onClick={() => {
-                                setOpen(!open);
-                            }}
-                            icon={<FaSearch />}
-                            text=""
-                            className="bg-transparent"
-                        />
-                    </div>
+                    Home
+                    </Link>
+                    <Link
+                    to="/about"
+                    onClick={() => setMobileOpen(false)}
+                    className={`mobile-link ${pathname === "/about" ? "active" : ""}`}
+                    >
+                    About Us
+                    </Link>
+                </nav>
+
+                <div className="mobile-search mt-4">
+                    <input
+                    type="text"
+                    placeholder="Search"
+                    value={cari}
+                    onChange={(e) => setCari(e.target.value)}
+                    />
+                    <FaSearch />
                 </div>
-            </div>
-        </nav>
-    );
+                </div>
+
+            )}
+      </nav>
+
+      {/* Floating Button */}
+      <div className="float-btn">
+        <Link
+          to={"https://api.whatsapp.com/send?phone=6281326025685"}
+          className="expand"
+        >
+          <MdOutlinePhone size={30} />
+        </Link>
+        <Link to={"mailto:cbmandiri87@yahoo.com"} className="expand">
+          <MdOutlineMail size={30} />
+        </Link>
+        <button>
+          <MdOutlineContactSupport size={30} />
+        </button>
+      </div>
+    </>
+  );
 };
 
 export default Navbar;

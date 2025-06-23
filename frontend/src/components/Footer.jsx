@@ -137,7 +137,7 @@ const Footer = () => {
                                 <Link to="/about">About Us</Link>
                             </div>
                         </div>
-                        <div className="flex flex-col">
+                        {/* <div className="flex flex-col">
                             <div className="flex flex-col gap-1">
                                 <h1
                                     className="font-bold"
@@ -147,7 +147,7 @@ const Footer = () => {
                                 </h1>
                                 <Link to="/project">Projects</Link>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
