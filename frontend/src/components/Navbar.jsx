@@ -12,28 +12,52 @@ import {
 
 const Navbar = () => {
   const { pathname } = useLocation();
-  const [showSearch, setShowSearch] = useState(false);
-  const [cari, setCari] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    setShowSearch(!!cari);
-  }, [cari]);
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   return (
     <>
-      <nav className="navbar">
+      <nav className={`navbar transition-all duration-300 ${scrolled || mobileOpen ? "scrolled" : ""}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="logo">
-            <Img src={iconilena} alt="Logo" width={140} height={40} />
+          <Link to="/" className="flex items-center z-110 relative" onClick={() => setMobileOpen(false)}>
+            <Img 
+                src={iconilena} 
+                alt="Logo" 
+                width={140} 
+                height={40} 
+                className={`transition-all duration-300 ${mobileOpen ? "brightness-0 invert" : ""}`} 
+            />
           </Link>
 
           {/* Toggle (mobile) */}
-          <div className="md:hidden">
-            <button
+          <div className="md:hidden z-110 relative">
+          <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="text-white text-xl"
+              className={`text-2xl transition-colors duration-300 text-white`}
             >
               {mobileOpen ? <FaTimes /> : <FaBars />}
             </button>
@@ -44,6 +68,7 @@ const Navbar = () => {
             {[
               { to: "/", label: "Home" },
               { to: "/about", label: "About Us" },
+              { to: "/project", label: "Project" },
             ].map(({ to, label }) => (
               <li key={to}>
                 <Link
@@ -57,68 +82,55 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
+        </div>
+      </nav>
 
-          {/* Search desktop */}
-          <div className={`search-container hidden md:flex ${showSearch ? "show" : ""}`}>
-            <input
-              type="text"
-              placeholder="Search"
-              className="search-input"
-              value={cari}
-              onChange={(e) => setCari(e.target.value)}
-            />
-            <Tombol
-              onClick={() => setShowSearch(!showSearch)}
-              icon={<FaSearch />}
-              text=""
-              className="bg-transparent"
-            />
-          </div>
+      {/* Full-screen Mobile Menu Overlay */}
+      <div className={`mobile-overlay md:hidden ${mobileOpen ? "open" : ""}`}>
+        <div className="nav-links-mobile">
+          <Link
+            to="/"
+            onClick={() => setMobileOpen(false)}
+            className={pathname === "/" ? "active" : ""}
+          >
+            Home
+          </Link>
+          <Link
+            to="/about"
+            onClick={() => setMobileOpen(false)}
+            className={pathname === "/about" ? "active" : ""}
+          >
+            About Us
+          </Link>
+          <Link
+            to="/project"
+            onClick={() => setMobileOpen(false)}
+            className={pathname === "/project" ? "active" : ""}
+          >
+            Project
+          </Link>
         </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-            <div className="mobile-menu md:hidden">
-                <nav className="flex flex-col gap-4">
-                    <Link
-                    to="/"
-                    onClick={() => setMobileOpen(false)}
-                    className={`mobile-link ${pathname === "/" ? "active" : ""}`}
-                    >
-                    Home
-                    </Link>
-                    <Link
-                    to="/about"
-                    onClick={() => setMobileOpen(false)}
-                    className={`mobile-link ${pathname === "/about" ? "active" : ""}`}
-                    >
-                    About Us
-                    </Link>
-                </nav>
-
-                <div className="mobile-search mt-4">
-                    <input
-                    type="text"
-                    placeholder="Search"
-                    value={cari}
-                    onChange={(e) => setCari(e.target.value)}
-                    />
-                    <FaSearch />
-                </div>
-                </div>
-
-            )}
-      </nav>
+        {/* Contact info in mobile menu */}
+        <div className="contact-mobile">
+          <a href="https://wa.me/628112938158" className="hover:text-[#e63946] transition-colors">
+            📞 +62 811 2938 158
+          </a>
+          <a href="mailto:ilenacbm@gmail.com" className="hover:text-[#e63946] transition-colors break-all">
+            ✉️ ilenacbm@gmail.com
+          </a>
+        </div>
+      </div>
 
       {/* Floating Button */}
       <div className="float-btn">
         <Link
-          to={"https://api.whatsapp.com/send?phone=6281326025685"}
+          to={"https://api.whatsapp.com/send?phone=628112938158"}
           className="expand"
         >
           <MdOutlinePhone size={30} />
         </Link>
-        <Link to={"mailto:cbmandiri87@yahoo.com"} className="expand">
+        <Link to={"mailto:ilenacbm@gmail.com"} className="expand">
           <MdOutlineMail size={30} />
         </Link>
         <button>
